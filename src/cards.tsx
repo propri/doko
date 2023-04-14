@@ -1,8 +1,8 @@
 export type CardSuit = 'Kreuz' | 'Pik' | 'Herz' | 'Karo'
 const cardSuits: CardSuit[] = ['Kreuz', 'Pik', 'Herz', 'Karo']
 
-export type CardValue = 'Ass' | '10' | 'König' | 'Dame' | 'Bube' | '9'
-const cardValues: CardValue[] = ['Ass' , '10' , 'König' , 'Dame' , 'Bube' , '9']
+export type CardValue = 'Ass' | '10' | 'Koenig' | 'Dame' | 'Bube' | '9'
+const cardValues: CardValue[] = ['Ass' , '10' , 'Koenig' , 'Dame' , 'Bube' , '9']
 
 export interface Card {
     suit: CardSuit

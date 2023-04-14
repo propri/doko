@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Cards, { CardBack, CardFront, shuffle } from './cards'
 
 function App() {
   const [myCards, setMyCards] = useState(shuffle(Cards))
   const [cardNumbers, setCardNumbers] = useState(12)
+  const [data, setData] = useState("")
   const offsetBase = cardNumbers / 3
 
   const playerActive = myCards.slice(0, 12)
@@ -18,7 +19,13 @@ function App() {
     setCardNumbers((ov) => ov -= 1)
   }
 
-  console.log(myCards[0])
+  useEffect(() => {
+    fetch("/api")
+      .then((res) => res.json())
+      .then((dt) => setData(dt.message))
+  }, [])
+
+  console.log(data)
 
   return (
     <div className="App">
