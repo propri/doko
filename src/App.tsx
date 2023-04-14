@@ -1,24 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import Cards, { CardBack, CardFront, shuffle } from './cards'
 
 function App() {
+  const [myCards, setMyCards] = useState(shuffle(Cards))
+  const [cardNumbers, setCardNumbers] = useState(12)
+  const offsetBase = cardNumbers / 3
+
+  const playerActive = myCards.slice(0, 12)
+  const playerLeft = myCards.slice(12, 24)
+  const playerTop = myCards.slice(24, 36)
+  const playerRight = myCards.slice(36, 48)
+
+  /* TODO: type ev? */
+  const clickHandler = (ev: any) => {
+    /* () => console.log(`${card.suit} - ${card.value} (${card.back})`) */
+    setCardNumbers((ov) => ov -= 1)
+  }
+
+  console.log(myCards[0])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="PlayingSurface">
+        <div className="player ActivePlayer">
+          {
+            playerActive.map((card, idx) => (
+              <div className="card" style={{ left: `-${offsetBase * idx}%`}} key={`${card.suit}-${card.value}-${card.back}`} onClick={clickHandler} id={`${card.suit}-${card.value}-${card.back}`} >
+                <CardFront card={card} />
+              </div>
+            ))
+          }
+        </div>
+        <div className="player PlayerLeft">
+          {
+            playerLeft.map((card, idx) => (
+              <div className="card" style={{ left: `-${offsetBase * (idx +1)}%`}} key={`${card.suit}-${card.value}-${card.back}`}>
+                <CardBack card={card} />
+              </div>
+            ))
+          }
+        </div>
+        <div className="player PlayerTop">
+          {
+            playerTop.map((card, idx) => (
+              <div className="card" style={{ left: `-${offsetBase * (idx +1)}%`}} key={`${card.suit}-${card.value}-${card.back}`}>
+                <CardBack card={card} />
+              </div>
+            ))
+          }
+        </div>
+        <div className="player PlayerRight">
+          {
+            playerRight.map((card, idx) => (
+              <div className="card" style={{ left: `-${offsetBase * (idx +1)}%`}} key={`${card.suit}-${card.value}-${card.back}`}>
+                <CardBack card={card} />
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   );
 }

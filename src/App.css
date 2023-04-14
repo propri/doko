@@ -1,38 +1,57 @@
 .App {
   text-align: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.PlayingSurface {
+    background: #086805;
+    height: 100%;
+    width: 100%;
+    position: absolute;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.player {
+    position: absolute;
+    height: 20%;
+    width: 70%;
+    display: flex;
+    flex-direction: row;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.PlayerLeft {
+    left: 10px;
+    top: 10%;
+    transform: rotateZ(90deg) scale(0.6);
 }
 
-.App-link {
-  color: #61dafb;
+.PlayerRight {
+    transform: rotateZ(270deg) scale(0.6);
+    right: 10px;
+    bottom: 10%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.PlayerTop {
+    transform: rotateZ(180deg) scale(0.6);
+    top: 10px;
+    right: 10%;
 }
+
+.ActivePlayer {
+    bottom: 10px;
+    left: 10%;
+}
+
+.card {
+    display: inline-block;
+    flex-shrink: 2;
+    position: relative;
+    transition: bottom 0.5s;
+}
+.ActivePlayer .card:hover {
+    outline: 3px solid blue;
+    bottom: 5%;
+}
+
