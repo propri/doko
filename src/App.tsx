@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import './App.css'
 import Cards, { CardBack, CardFront, shuffle } from './cards'
 
 function App() {
@@ -16,6 +16,7 @@ function App() {
   /* TODO: type ev? */
   const clickHandler = (ev: any) => {
     /* () => console.log(`${card.suit} - ${card.value} (${card.back})`) */
+    console.log(ev)
     setCardNumbers((ov) => ov -= 1)
   }
 
@@ -68,7 +69,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -2,13 +2,13 @@ export type CardSuit = 'Kreuz' | 'Pik' | 'Herz' | 'Karo'
 const cardSuits: CardSuit[] = ['Kreuz', 'Pik', 'Herz', 'Karo']
 
 export type CardValue = 'Ass' | '10' | 'Koenig' | 'Dame' | 'Bube' | '9'
-const cardValues: CardValue[] = ['Ass' , '10' , 'Koenig' , 'Dame' , 'Bube' , '9']
+const cardValues: CardValue[] = ['Ass', '10', 'Koenig', 'Dame', 'Bube', '9']
 
 export interface Card {
-    suit: CardSuit
-    value: CardValue
-    face: string
-    back: string
+  suit: CardSuit
+  value: CardValue
+  face: string
+  back: string
 }
 
 const back1 = 'cards/card_back_blue.png'
@@ -16,9 +16,10 @@ const back2 = 'cards/card_back_orange.png'
 
 const Cards: Card[] = []
 
+// generate cards (one each for each suit, value and deck)
 cardSuits.forEach((suit) => {
   cardValues.forEach((value) => {
-    [back1, back2].forEach((back: string) => {
+    ;[back1, back2].forEach((back: string) => {
       Cards.push({
         suit,
         value,
@@ -29,8 +30,13 @@ cardSuits.forEach((suit) => {
   })
 })
 
-export const CardFront = ({ card} : { card: Card} ) => (<img width="150" src={card.face} alt={`${card.suit} ${card.value}`} />) 
-export const CardBack = ({ card }: {card : Card} ) => (<img width="150" src={card.back} alt='Karte' />)
+export const CardFront = ({ card }: { card: Card }) => (
+  <img width="150" src={card.face} alt={`${card.suit} ${card.value}`} />
+)
+
+export const CardBack = ({ card }: { card: Card }) => (
+  <img width="150" src={card.back} alt="Karte" />
+)
 
 export function shuffle(cards: Card[]) {
   let m = cards.length
@@ -39,7 +45,6 @@ export function shuffle(cards: Card[]) {
 
   // While there remain elements to shuffle…
   while (m) {
-
     // Pick a remaining element…
     i = Math.floor(Math.random() * m--)
 
@@ -51,8 +56,5 @@ export function shuffle(cards: Card[]) {
 
   return cards
 }
-
-//export function sortCart(cards: Card[]) {
-
 
 export default Cards
