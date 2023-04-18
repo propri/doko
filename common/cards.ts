@@ -1,14 +1,19 @@
-export type CardSuit = 'Kreuz' | 'Pik' | 'Herz' | 'Karo'
-const cardSuits: CardSuit[] = ['Kreuz', 'Pik', 'Herz', 'Karo']
+/* TODO: enum benutzen? */
+export type KartenFarbe = 'Kreuz' | 'Pik' | 'Herz' | 'Karo'
+/* TODO: typescript: kann man das nicht irgendwie automatisch bestimmen? */
+const kartenFarben: KartenFarbe[] = ['Kreuz', 'Pik', 'Herz', 'Karo']
 
-export type CardValue = 'Ass' | '10' | 'Koenig' | 'Dame' | 'Bube' | '9'
-const cardValues: CardValue[] = ['Ass', '10', 'Koenig', 'Dame', 'Bube', '9']
+/* TODO: enum benutzen? */
+export type KartenWert = 'Ass' | '10' | 'Koenig' | 'Dame' | 'Bube' | '9'
+/* TODO: typescript: kann man das nicht irgendwie automatisch bestimmen? */
+const kartenWerte: KartenWert[] = ['Ass', '10', 'Koenig', 'Dame', 'Bube', '9']
 
 export interface Card {
-  suit: CardSuit
-  value: CardValue
+  farbe: KartenFarbe
+  wert: KartenWert
   face: string
   back: string
+  trumpf?: boolean
 }
 
 const back1 = 'cards/card_back_blue.png'
@@ -17,26 +22,18 @@ const back2 = 'cards/card_back_orange.png'
 const Cards: Card[] = []
 
 // generate cards (one each for each suit, value and deck)
-cardSuits.forEach((suit) => {
-  cardValues.forEach((value) => {
+kartenFarben.forEach((suit) => {
+  kartenWerte.forEach((value) => {
     ;[back1, back2].forEach((back: string) => {
       Cards.push({
-        suit,
-        value,
+        farbe: suit,
+        wert: value,
         back,
         face: `cards/${value}_${suit}.png`,
       })
     })
   })
 })
-
-export const CardFront = ({ card }: { card: Card }) => (
-  <img width="150" src={card.face} alt={`${card.suit} ${card.value}`} />
-)
-
-export const CardBack = ({ card }: { card: Card }) => (
-  <img width="150" src={card.back} alt="Karte" />
-)
 
 export function shuffle(cards: Card[]) {
   let m = cards.length

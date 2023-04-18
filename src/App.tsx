@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import Cards, { CardBack, CardFront, shuffle } from './cards'
+//import Cards, { shuffle } from '../common/cards'
+import { CardBack, CardFront } from './Cards'
 
 function App() {
   const [myCards, setMyCards] = useState(shuffle(Cards))
