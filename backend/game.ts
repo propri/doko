@@ -135,40 +135,44 @@ export interface Game {
   alleStiche: Stich[]
 }
 
-export const game: Game = {
-  spieler: [],
-  turnCounter: 0,
-  aktuellerStich: {
-    gespielteKarten: [],
-  },
-  alleStiche: [],
-}
+//export const game: Game = {
+//const game: Game = {
+  //spieler: [],
+  //turnCounter: 0,
+  //aktuellerStich: {
+    //gespielteKarten: [],
+  //},
+  //alleStiche: [],
+//}
 
-function advanceTurn() {
+function advanceTurn(game: Game) {
   game.turnCounter += 1
 }
 
-export function playCard(spieler: Spieler, karte: Card) {
+export function playCard(game: Game, spieler: Spieler, karte: Card) {
   if (game.naechsterSpieler !== spieler) {
     throw Error('Spieler nicht am Zug')
   }
   if (!spieler.cards.includes(karte)) {
     throw Error('Ungültige Karte')
   }
-  advanceTurn()
+  advanceTurn(game)
+
+  // TODO: Karte aus Hand vom Spieler entfernen
 
   game.aktuellerStich.gespielteKarten.push({
     spieler,
     card: karte,
   })
   if (game.aktuellerStich.gespielteKarten.length === 4) {
-    // TODO: gewinner des Stichs bestimmen
+    // TODO: gewinner des Stichs bestimmen -> aufspiel
   } else {
-    game.naechsterSpieler = getNaechsterSpieler(spieler)
+    game.naechsterSpieler = getNaechsterSpieler(game, spieler)
   }
 }
 
-export function getTurn(): number {
+// turncounter
+export function getTurn(game: Game): number {
   return game.turnCounter
 }
 
@@ -193,7 +197,7 @@ function setTrumpf(cards: Card[], variante: SpielTyp) {
   })
 }
 
-function getNaechsterSpieler(spieler: Spieler): Spieler {
+function getNaechsterSpieler(game: Game, spieler: Spieler): Spieler {
   const fallback = game.spieler[0]
   if ((spieler.position = Position.A)) {
     return (
@@ -219,9 +223,18 @@ function getNaechsterSpieler(spieler: Spieler): Spieler {
   return fallback
 }
 
-export function startGame(game: Game, spieler: Spieler[]) {
+export function startGame(spieler: Spieler[]): Game {
   if (spieler.length !== 4) {
     throw Error('needs exactly 4 players')
+  }
+
+  const game: Game = {
+    spieler: [],
+    turnCounter: 0,
+    aktuellerStich: {
+      gespielteKarten: [],
+    },
+    alleStiche: [],
   }
   const cards = shuffle([...Karten])
   setTrumpf(cards, SpielTyp.default)
@@ -233,11 +246,13 @@ export function startGame(game: Game, spieler: Spieler[]) {
 
   const fallback = game.spieler[0]
   game.turnCounter = 0
+  game.naechsterSpieler = getNaechsterSpieler(
+    game, game.spieler.find((spieler) => spieler.geber) ?? fallback
+  )
   game.aktuellerStich = {
-    naechsterSpieler: getNaechsterSpieler(
-      game.spieler.find((spieler) => spieler.geber) ?? fallback
-    ),
     gespielteKarten: [],
   }
   game.alleStiche = []
+
+  return game
 }
