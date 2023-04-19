@@ -54,4 +54,14 @@ export function shuffle(cards: Card[]) {
   return cards
 }
 
+// get name of card
+export function serializeCard(card: Card): string {
+  return `${card.farbe} ${card.wert}`
+}
+
+// check if card instance is same as card name
+export function isCard(card: Card, cardName: string): boolean {
+  return serializeCard(card) === cardName
+}
+
 export default Cards
