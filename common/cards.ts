@@ -8,6 +8,15 @@ export type KartenWert = 'Ass' | '10' | 'Koenig' | 'Dame' | 'Bube' | '9'
 /* TODO: typescript: kann man das nicht irgendwie automatisch bestimmen? */
 const kartenWerte: KartenWert[] = ['Ass', '10', 'Koenig', 'Dame', 'Bube', '9']
 
+export const KartenPunkte: Record<KartenWert, number> = {
+  Ass: 11,
+  10: 10,
+  Koenig: 4,
+  Dame: 3,
+  Bube: 2,
+  9: 0,
+}
+
 export interface Card {
   farbe: KartenFarbe
   wert: KartenWert
