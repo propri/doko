@@ -69,8 +69,11 @@ export function serializeCard(card: Card): string {
 }
 
 // check if card instance is same as card name
-export function isCard(card: Card, cardName: string): boolean {
-  return serializeCard(card) === cardName
+export function isCard(card: Card, cardNameOrInstance: string | Card): boolean {
+  if (typeof cardNameOrInstance === 'string') {
+    return serializeCard(card) === cardNameOrInstance
+  }
+  return card.farbe === cardNameOrInstance.farbe && card.wert === cardNameOrInstance.wert
 }
 
 export default Cards
