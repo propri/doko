@@ -1,4 +1,6 @@
-import Karten, { Card, shuffle, KartenWert, KartenFarbe } from '../common/cards'
+import Karten, { shuffle, isCard, serializeCard } from '../common/cards'
+import type { Card, KartenWert, KartenFarbe } from '../common/cards'
+//import * as variants from './variants'
 
 const MitNeunen = true
 const numCards = MitNeunen ? 12 : 10
@@ -31,7 +33,7 @@ const defaultTrumpf: Trumpf = {
   werte: ['Dame', 'Bube'],
 }
 
-export const defaultTrumpfOrder = {
+export const defaultTrumpfOrder: Record<string, number> = {
   'Herz 10': 5,
   'Kreuz Dame': 6,
   'Pik Dame': 7,
@@ -47,25 +49,32 @@ export const defaultTrumpfOrder = {
   'Karo 9': 17,
 }
 
-export const defaultKreuzOrder = {
-  'Kreuz Ass': 5,
-  'Kreuz 10': 6,
-  'Kreuz Koenig': 7,
-  'Kreuz 9': 6,
+export const defaultFehlOrder: Record<string, number> = {
+  Ass: 5,
+  '10': 6,
+  Koenig: 7,
+  '9': 6,
 }
 
-export const defaultPikOrder = {
-  'Pik Ass': 5,
-  'Pik 10': 6,
-  'Pik Koenig': 7,
-  'Pik 9': 6,
-}
+//export const defaultKreuzOrder: Record<string, number> = {
+//'Kreuz Ass': 5,
+//'Kreuz 10': 6,
+//'Kreuz Koenig': 7,
+//'Kreuz 9': 6,
+//}
 
-export const defaultHerzOrder = {
-  'Herz Ass': 5,
-  'Herz Koenig': 6,
-  'Herz 9': 7,
-}
+//export const defaultPikOrder: Record<string, number> = {
+//'Pik Ass': 5,
+//'Pik 10': 6,
+//'Pik Koenig': 7,
+//'Pik 9': 6,
+//}
+
+//export const defaultHerzOrder: Record<string, number> = {
+//'Herz Ass': 5,
+//'Herz Koenig': 6,
+//'Herz 9': 7,
+//}
 
 export const displayOrder = {
   // Trumpf
@@ -135,45 +144,148 @@ export interface Game {
   alleStiche: Stich[]
 }
 
-//export const game: Game = {
-//const game: Game = {
-  //spieler: [],
-  //turnCounter: 0,
-  //aktuellerStich: {
-    //gespielteKarten: [],
-  //},
-  //alleStiche: [],
-//}
+// turncounter
+export function getTurn(game: Game): number {
+  return game.turnCounter
+}
 
 function advanceTurn(game: Game) {
   game.turnCounter += 1
 }
 
-export function playCard(game: Game, spieler: Spieler, karte: Card) {
-  if (game.naechsterSpieler !== spieler) {
-    throw Error('Spieler nicht am Zug')
+function isPlayedCardValid(game: Game, karte: Card, hand: Card[]): boolean {
+  // Alle Karten dürfen angespielt werden
+  if (game.aktuellerStich.gespielteKarten.length === 0) {
+    return true
   }
-  if (!spieler.cards.includes(karte)) {
-    throw Error('Ungültige Karte')
+
+  const angespielt: Card = game.aktuellerStich.gespielteKarten[0].card
+  // Trumpf ist angespielt, Trumpf wird bedient
+  if (angespielt.trumpf && karte.trumpf) {
+    return true
   }
-  advanceTurn(game)
+  // Trumpf ist angespielt, Spieler hat kein Trumpf
+  if (angespielt.trumpf && !hand.find((c) => c.trumpf)) {
+    return true
+  }
+  // Fehlfarbe ist angespielt, wird bedient
+  if (angespielt.farbe === karte.farbe) {
+    return true
+  }
+  // Fehlfarbe ist angespielt, Spieler hat Fehlfarbe nicht mehr
+  if (!hand.find((c) => c.farbe === angespielt.farbe)) {
+    return true
+  }
+  return false
+}
 
-  // TODO: Karte aus Hand vom Spieler entfernen
-
-  game.aktuellerStich.gespielteKarten.push({
-    spieler,
-    card: karte,
-  })
-  if (game.aktuellerStich.gespielteKarten.length === 4) {
-    // TODO: gewinner des Stichs bestimmen -> aufspiel
+function getGewinner(game: Game): Spieler {
+  const hasTrumpf: boolean = !!game.aktuellerStich.gespielteKarten.find(
+    ({ card }) => card.trumpf
+  )
+  const stich = game.aktuellerStich
+  //let gewinner: Spieler
+  if (hasTrumpf) {
+    /* TODO: Sonderregeln */
+    const Herz10en = stich.gespielteKarten.filter(
+      ({ card }) => card.wert === '10' && card.farbe === 'Herz'
+    )
+    // mehr als eine Herz 10 im Stich
+    if (Herz10en.length === 2) {
+      const isLetzterStich: boolean = game.alleStiche.length === numCards - 1
+      if (isLetzterStich) {
+        return Herz10en[0].spieler
+      }
+      return Herz10en[1].spieler
+    }
+    /* maximal eine Herz 10, höchster Trumpf gewinnt */
+    const gewinnerKarte = stich.gespielteKarten.reduce(
+      (previousValue, currentValue) => {
+        if (!currentValue.card.trumpf) {
+          return previousValue
+        }
+        if (
+          defaultTrumpfOrder[serializeCard(currentValue.card)] ??
+          99 < defaultTrumpfOrder[serializeCard(previousValue.card) ?? 99]
+        ) {
+          return currentValue
+        }
+        return previousValue
+      },
+      stich.gespielteKarten[0]
+    )
+    return gewinnerKarte.spieler
   } else {
-    game.naechsterSpieler = getNaechsterSpieler(game, spieler)
+    const angespielt: Card = game.aktuellerStich.gespielteKarten[0].card
+    const gewinnerKarte = stich.gespielteKarten.reduce(
+      (previousValue, currentValue) => {
+        if (currentValue.card.farbe !== angespielt.farbe) {
+          return previousValue
+        }
+        if (
+          defaultFehlOrder[currentValue.card.wert] <
+          defaultFehlOrder[previousValue.card.wert]
+        ) {
+          return currentValue
+        }
+        return previousValue
+      },
+      stich.gespielteKarten[0]
+    )
+
+    return gewinnerKarte.spieler
   }
 }
 
-// turncounter
-export function getTurn(game: Game): number {
-  return game.turnCounter
+export function playCard(game: Game, spieler: Spieler, karte: Card) {
+  // TODO: spieler nach value bestimmen
+  if (game.naechsterSpieler !== spieler) {
+    throw Error('Spieler nicht am Zug')
+  }
+  if (!spieler.cards.find((c) => isCard(c, karte))) {
+    throw Error('Ungültige Karte')
+  }
+  /* Karte instanz bestimmen */
+  // (wir wissen hier, dass die Karte existiert)
+  const gespielteKarte: Card = spieler.cards.find((c) =>
+    isCard(c, karte)
+  ) as unknown as Card
+
+  // (aufgespielte Karte bedienen, wenn möglich)
+  if (!isPlayedCardValid(game, gespielteKarte, spieler.cards)) {
+    throw Error('Falsch bedient')
+  }
+  advanceTurn(game)
+
+  // gespielte Karte aus Hand des Spielers entfernen
+  game.spieler.forEach((_spieler, idx) => {
+    // TODO: spieler nach value bestimmen
+    if (spieler === _spieler) {
+      game.spieler[idx].cards = game.spieler[idx].cards.filter(
+        (_card) => _card !== gespielteKarte
+      )
+    }
+  })
+
+  game.aktuellerStich.gespielteKarten.push({
+    spieler,
+    card: gespielteKarte,
+  })
+  if (game.aktuellerStich.gespielteKarten.length === 4) {
+    // TODO: gewinner des Stichs bestimmen -> aufspiel für nächste Runde
+    // Stich als gewonnen markieren
+    // Stich in Liste gelaufener Stiche einfügen
+    const gewinner: Spieler = getGewinner(game)
+
+    game.aktuellerStich.gewinner = gewinner
+    game.naechsterSpieler = gewinner
+    game.alleStiche.push(game.aktuellerStich)
+    game.aktuellerStich = {
+      gespielteKarten: [],
+    }
+  } else {
+    game.naechsterSpieler = getNaechsterSpieler(game, spieler)
+  }
 }
 
 function setTrumpf(cards: Card[], variante: SpielTyp) {
@@ -198,30 +310,34 @@ function setTrumpf(cards: Card[], variante: SpielTyp) {
 }
 
 function getNaechsterSpieler(game: Game, spieler: Spieler): Spieler {
-  const fallback = game.spieler[0]
+  /* wir sollten immer den nächsten finden können. */
   if ((spieler.position = Position.A)) {
-    return (
-      game.spieler.find(({ position }) => position === Position.B) ?? fallback
-    )
+    return game.spieler.find(
+      ({ position }) => position === Position.B
+    ) as Spieler
   }
   if ((spieler.position = Position.B)) {
-    return (
-      game.spieler.find(({ position }) => position === Position.C) ?? fallback
-    )
+    return game.spieler.find(
+      ({ position }) => position === Position.C
+    ) as Spieler
   }
   if ((spieler.position = Position.C)) {
-    return (
-      game.spieler.find(({ position }) => position === Position.D) ?? fallback
-    )
+    return game.spieler.find(
+      ({ position }) => position === Position.D
+    ) as Spieler
   }
   if ((spieler.position = Position.D)) {
-    return (
-      game.spieler.find(({ position }) => position === Position.A) ?? fallback
-    )
+    return game.spieler.find(
+      ({ position }) => position === Position.A
+    ) as Spieler
   }
 
-  return fallback
+  throw Error('spieler nicht vorhanden')
 }
+
+// TODO
+//export function determinePlayerPoints(game: Game): { spieler: Spieler, punkte: number }[] {
+//}
 
 export function startGame(spieler: Spieler[]): Game {
   if (spieler.length !== 4) {
@@ -247,7 +363,8 @@ export function startGame(spieler: Spieler[]): Game {
   const fallback = game.spieler[0]
   game.turnCounter = 0
   game.naechsterSpieler = getNaechsterSpieler(
-    game, game.spieler.find((spieler) => spieler.geber) ?? fallback
+    game,
+    game.spieler.find((spieler) => spieler.geber) ?? fallback
   )
   game.aktuellerStich = {
     gespielteKarten: [],
