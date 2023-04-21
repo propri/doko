@@ -6,6 +6,7 @@
 - Funktionen vertesten
 - Sessions / Authentifizierung
 - Routen für Gameplay anlegen + anbinden
+- Karten austeilen und Spielstart trennen (Ansagen (9er, Armut, Solo) etc.)
 
 
 ## Frontend
