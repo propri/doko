@@ -310,26 +310,14 @@ function setTrumpf(cards: Card[], variante: SpielTyp) {
 }
 
 function getNaechsterSpieler(game: Game, spieler: Spieler): Spieler {
-  /* wir sollten immer den nächsten finden können. */
-  if ((spieler.position = Position.A)) {
-    return game.spieler.find(
-      ({ position }) => position === Position.B
-    ) as Spieler
+  const curIdx = positions.findIndex((position) => spieler.position === position)
+  const nextPosition = positions[(curIdx + 1) % positions.length]
+  const nextSpieler = game.spieler.find(({ position }) => position === nextPosition)
+  if (!nextSpieler) {
+    // sollte nie vorkommen
+    throw Error('naechsten Spieler nicht gefunden')
   }
-  if ((spieler.position = Position.B)) {
-    return game.spieler.find(
-      ({ position }) => position === Position.C
-    ) as Spieler
-  }
-  if ((spieler.position = Position.C)) {
-    return game.spieler.find(
-      ({ position }) => position === Position.D
-    ) as Spieler
-  }
-  if ((spieler.position = Position.D)) {
-    return game.spieler.find(
-      ({ position }) => position === Position.A
-    ) as Spieler
+  return nextSpieler
   }
 
   throw Error('spieler nicht vorhanden')
