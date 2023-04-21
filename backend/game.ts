@@ -1,4 +1,9 @@
-import Karten, { shuffle, isCard, serializeCard } from '../common/cards'
+import Karten, {
+  shuffle,
+  isCard,
+  serializeCard,
+  KartenPunkte,
+} from '../common/cards'
 import type { Card, KartenWert, KartenFarbe } from '../common/cards'
 //import * as variants from './variants'
 
@@ -318,14 +323,37 @@ function getNaechsterSpieler(game: Game, spieler: Spieler): Spieler {
     throw Error('naechsten Spieler nicht gefunden')
   }
   return nextSpieler
-  }
-
-  throw Error('spieler nicht vorhanden')
 }
 
-// TODO
-//export function determinePlayerPoints(game: Game): { spieler: Spieler, punkte: number }[] {
-//}
+export function determinePlayerPoints(
+  game: Game
+): { spieler: Spieler; punkte: number }[] {
+  if (game.alleStiche.length !== numCards) {
+    throw Error('noch nicht alle Stiche gespielt')
+  }
+
+  const result = game.spieler.map((s) => ({
+    spieler: s,
+    punkte: 0,
+  }))
+  game.alleStiche.forEach((stich) => {
+    if (!stich.gewinner) {
+      throw Error('Alle Stiche müssen einen Gewinner haben')
+    }
+    const gewinner = stich.gewinner
+    const punkte = stich.gespielteKarten.reduce(
+      (pv: number, { card }) => pv + KartenPunkte[card.wert],
+      0
+    )
+    result.forEach(({ spieler }, idx) => {
+      if (spieler === gewinner) {
+        result[idx].punkte += punkte
+      }
+    })
+  })
+
+  return result
+}
 
 export function startGame(spieler: Spieler[]): Game {
   if (spieler.length !== 4) {
