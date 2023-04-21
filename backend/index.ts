@@ -1,7 +1,8 @@
 import express from 'express'
 //const sessions = require('sessions')
 
-import { startGame, Position } from './game'
+import { Position } from './types'
+import { startGame } from './game'
 import type { Spieler } from './game'
 
 //const SECRET = process.env.SECRET || 'supersecret-secret'
@@ -20,7 +21,6 @@ const app = express()
 //},
 //resave: false,
 //})
-
 
 const spieler: Spieler[] = [
   {
@@ -53,8 +53,8 @@ const game = startGame(spieler)
 
 app.get('/my-cards', (req, res) => {
   const currentPlayer: Spieler = game.spieler.find((s) => {
-    return req.query.spieler === s.name}
-  ) as unknown as Spieler
+    return req.query.spieler === s.name
+  }) as unknown as Spieler
   //console.log(currentPlayer)
   res.json(currentPlayer.cards)
 })
