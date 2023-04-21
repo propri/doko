@@ -190,9 +190,10 @@ function getStichGewinner(game: Game): Spieler {
     ({ card }) => card.trumpf
   )
   const stich = game.aktuellerStich
-  //let gewinner: Spieler
   if (hasTrumpf) {
     /* TODO: Sonderregeln */
+
+    // findLast für zweite Herz10?
     const Herz10en = stich.gespielteKarten.filter(
       ({ card }) => card.wert === '10' && card.farbe === 'Herz'
     )
@@ -281,14 +282,15 @@ export function playCard(game: Game, spieler: Spieler, karte: Card) {
     card: gespielteKarte,
   })
   if (game.aktuellerStich.gespielteKarten.length === 4) {
-    // TODO: gewinner des Stichs bestimmen -> aufspiel für nächste Runde
-    // Stich als gewonnen markieren
-    // Stich in Liste gelaufener Stiche einfügen
+    // bestimmen, wer den Stich gewonnen hat
     const gewinner: Spieler = getStichGewinner(game)
 
     game.aktuellerStich.gewinner = gewinner
+    // festlegen, dass gewinner den nächsten stich anspielt
     game.naechsterSpieler = gewinner
+    // Stich in Liste der Stiche einfügen
     game.alleStiche.push(game.aktuellerStich)
+    // neuen stich vorbereiten
     game.aktuellerStich = {
       gespielteKarten: [],
     }
@@ -298,6 +300,7 @@ export function playCard(game: Game, spieler: Spieler, karte: Card) {
       game.isFinished = true
     }
   } else {
+    // nächster Spieler in Reihenfolge ist dran.
     game.naechsterSpieler = getNaechsterSpieler(game, spieler)
   }
 }
@@ -324,9 +327,13 @@ function setTrumpf(cards: Card[], variante: SpielTyp) {
 }
 
 function getNaechsterSpieler(game: Game, spieler: Spieler): Spieler {
-  const curIdx = positions.findIndex((position) => spieler.position === position)
+  const curIdx = positions.findIndex(
+    (position) => spieler.position === position
+  )
   const nextPosition = positions[(curIdx + 1) % positions.length]
-  const nextSpieler = game.spieler.find(({ position }) => position === nextPosition)
+  const nextSpieler = game.spieler.find(
+    ({ position }) => position === nextPosition
+  )
   if (!nextSpieler) {
     // sollte nie vorkommen
     throw Error('naechsten Spieler nicht gefunden')
