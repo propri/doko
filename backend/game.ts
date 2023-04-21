@@ -147,6 +147,7 @@ export interface Game {
   turnCounter: number
   aktuellerStich: Stich
   alleStiche: Stich[]
+  isFinished: boolean
 }
 
 // turncounter
@@ -247,6 +248,9 @@ export function playCard(game: Game, spieler: Spieler, karte: Card) {
   if (game.naechsterSpieler !== spieler) {
     throw Error('Spieler nicht am Zug')
   }
+  if (game.isFinished) {
+    throw Error('Alle Karten wurden gespielt')
+  }
   if (!spieler.cards.find((c) => isCard(c, karte))) {
     throw Error('Ungültige Karte')
   }
@@ -287,6 +291,11 @@ export function playCard(game: Game, spieler: Spieler, karte: Card) {
     game.alleStiche.push(game.aktuellerStich)
     game.aktuellerStich = {
       gespielteKarten: [],
+    }
+
+    // alle stiche gemacht?
+    if (game.alleStiche.length === numCards) {
+      game.isFinished = true
     }
   } else {
     game.naechsterSpieler = getNaechsterSpieler(game, spieler)
@@ -367,6 +376,7 @@ export function startGame(spieler: Spieler[]): Game {
       gespielteKarten: [],
     },
     alleStiche: [],
+    isFinished: false,
   }
   const cards = shuffle([...Karten])
   setTrumpf(cards, SpielTyp.default)
