@@ -185,7 +185,7 @@ function isPlayedCardValid(game: Game, karte: Card, hand: Card[]): boolean {
   return false
 }
 
-function getGewinner(game: Game): Spieler {
+function getStichGewinner(game: Game): Spieler {
   const hasTrumpf: boolean = !!game.aktuellerStich.gespielteKarten.find(
     ({ card }) => card.trumpf
   )
@@ -284,7 +284,7 @@ export function playCard(game: Game, spieler: Spieler, karte: Card) {
     // TODO: gewinner des Stichs bestimmen -> aufspiel für nächste Runde
     // Stich als gewonnen markieren
     // Stich in Liste gelaufener Stiche einfügen
-    const gewinner: Spieler = getGewinner(game)
+    const gewinner: Spieler = getStichGewinner(game)
 
     game.aktuellerStich.gewinner = gewinner
     game.naechsterSpieler = gewinner
