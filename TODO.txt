@@ -1,0 +1,21 @@
+# TODO
+
+## Backend
+
+- backend/game aufsplitten in einzelne Dateien
+- Funktionen vertesten
+- Sessions / Authentifizierung
+- Routen für Gameplay anlegen + anbinden
+
+
+## Frontend
+
+- Kartenhand darstellen ("manuell" ausrichten?)
+- Stiche darstellen
+- Karten aus dem Frontend spielen
+
+
+## Technisch
+
+- react-query
+- trpc
