@@ -49,7 +49,7 @@ const spieler: Spieler[] = [
   },
 ]
 
-const game = startGame(spieler)
+const game = startGame(spieler, 12)
 
 app.get('/my-cards', (req, res) => {
   const currentPlayer: Spieler = game.spieler.find((s) => {
@@ -59,9 +59,9 @@ app.get('/my-cards', (req, res) => {
   res.json(currentPlayer.cards)
 })
 
-app.get('/api', (req, res) => {
-  res.json({ message: 'Foobar' })
-})
+/*app.get('/api', (req, res) => {*/
+/*res.json({ message: 'Foobar' })*/
+/*})*/
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)

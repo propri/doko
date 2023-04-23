@@ -9,6 +9,8 @@ export default function startGame(spieler: Spieler[], numCards: number): Game {
     throw Error('needs exactly 4 players')
   }
 
+  /* TODO: wenn keine 9en, die 9en aus den Karten aussortieren */
+
   const game: Game = {
     spieler: [],
     turnCounter: 0,
