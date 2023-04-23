@@ -1,26 +1,51 @@
 import express from 'express'
-//const sessions = require('sessions')
+import sessions from 'express-session'
+import cookieParser from 'cookie-parser'
 
 import { Position } from './types'
 import { startGame } from './game'
 import type { Spieler } from './game'
 
-//const SECRET = process.env.SECRET || 'supersecret-secret'
+const SECRET = process.env.SECRET || 'supersecret-secret'
 const PORT = process.env.PORT || 3001
 
 /* one day */
-//const maxAge = 24 * 60 * 60 * 1000
+const maxAge = 24 * 60 * 60 * 1000
 
 const app = express()
 
-//app.use(sessions({
-//secret: SECRET,
-//saveUninitialized: true,
-//cookie: {
-//maxAge,
-//},
-//resave: false,
-//})
+// passwörter zum einloggen
+const passwords: Record<string, string> = {
+  'Spieler A': 'foobarA',
+  'Spieler B': 'foobarB',
+  'Spieler C': 'foobarC',
+  'Spieler D': 'foobarD',
+}
+
+/* daten, die in der session gespeichert werden */
+interface mySessionData extends sessions.Session {
+  userid?: string
+}
+
+// parse cookies
+app.use(cookieParser())
+
+// parse incoming data
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+/* setup sessions */
+/* jeder oufruf erzeugt eine neue oder verwendet eine vorhandene session. */
+app.use(
+  sessions({
+    secret: SECRET,
+    saveUninitialized: true,
+    cookie: {
+      maxAge,
+    },
+    resave: false,
+  })
+)
 
 const spieler: Spieler[] = [
   {
@@ -49,19 +74,42 @@ const spieler: Spieler[] = [
   },
 ]
 
+/* ein spiel starten */
 const game = startGame(spieler, 12)
 
-app.get('/my-cards', (req, res) => {
-  const currentPlayer: Spieler = game.spieler.find((s) => {
-    return req.query.spieler === s.name
-  }) as unknown as Spieler
-  //console.log(currentPlayer)
-  res.json(currentPlayer.cards)
+/* route, auf der user sich einloggen können */
+app.post('/login', (req, res) => {
+  if (
+    req.body.username &&
+    typeof req.body.username === 'string' &&
+    req.body?.password &&
+    typeof req.body.password === 'string' &&
+    passwords[req.body.username] === req.body.password
+  ) {
+    const session: mySessionData = req.session
+    session.userid = req.body.username
+    console.log(req.session)
+    res.json({ message: 'successful' })
+  } else {
+    res.status(403)
+    res.json({ message: 'failed' })
+  }
 })
 
-/*app.get('/api', (req, res) => {*/
-/*res.json({ message: 'Foobar' })*/
-/*})*/
+app.get('/my-cards', (req, res) => {
+  const session: mySessionData = req.session
+  if (session.userid) {
+    console.log(`Spieler erkannt: ${session.userid}`)
+    // was, wenn wir keinen spieler finden?
+    const currentPlayer: Spieler = game.spieler.find((s) => {
+      return session.userid === s.name
+    }) as Spieler
+    res.json(currentPlayer.cards)
+  }
+  res.redirect('/login')
+})
+
+/* TODO: route, die user info ausgibt? */
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)
