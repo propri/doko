@@ -106,7 +106,16 @@ app.get('/my-cards', (req, res) => {
     }) as Spieler
     res.json(currentPlayer.cards)
   }
-  res.redirect('/login')
+  /*res.redirect('/login')*/
+})
+
+app.get('/userinfo', (req, res) => {
+  const session: mySessionData = req.session
+  if (session.userid) {
+    res.json({ message: { loggedIn: true, user: session.userid } })
+  } else {
+    res.json({ message: { loggedIn: false } })
+  }
 })
 
 /* TODO: route, die user info ausgibt? */

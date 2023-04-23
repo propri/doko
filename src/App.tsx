@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 //import Cards, { shuffle } from '../common/cards'
 //import { CardBack, CardFront } from './Cards'
@@ -12,6 +12,18 @@ function App() {
   const [password, setPassword] = useState('')
   const [result, setResult] = useState('')
   const [cards, setCards] = useState([])
+
+  const [userInfo, setUserInfo] = useState<{
+    loggedIn: boolean
+    user?: string
+  }>({ loggedIn: false })
+  const [checkAgain, setCheckAgain] = useState(0)
+
+  useEffect(() => {
+    fetch('/userinfo')
+      .then((res) => res.json())
+      .then((data) => setUserInfo(data.message))
+  }, [checkAgain])
 
   //const playerActive = myCards.slice(0, 12)
   //const playerLeft = myCards.slice(12, 24)
@@ -39,6 +51,7 @@ function App() {
     })
       .then((res) => res.json())
       .then((dt) => setResult(dt.message))
+      .then(() => setCheckAgain((ov) => ov + 1))
   }
 
   const getCards = (ev: any) => {
@@ -52,32 +65,39 @@ function App() {
   return (
     <div className="App">
       <div>
-        <form onSubmit={handleLogin}>
-          <p>
-            User:
-            <input
-              type="text"
-              value={username}
-              onChange={(ev) => setUsername(ev.target.value)}
-            />
-          </p>
-          <p>
-            Passord:
-            <input
-              type="password"
-              value={password}
-              onChange={(ev) => setPassword(ev.target.value)}
-            />
-          </p>
-          <p>
-            <button type="submit">Log in</button>
-          </p>
-          <p>{result}</p>
-          <p>{JSON.stringify(cards)}</p>
-          <p>
-            <button onClick={getCards}>get Cards</button>
-          </p>
-        </form>
+        {!userInfo.loggedIn && (
+          <form onSubmit={handleLogin}>
+            <p>
+              User:
+              <input
+                type="text"
+                value={username}
+                onChange={(ev) => setUsername(ev.target.value)}
+              />
+            </p>
+            <p>
+              Passord:
+              <input
+                type="password"
+                value={password}
+                onChange={(ev) => setPassword(ev.target.value)}
+              />
+            </p>
+            <p>
+              <button type="submit">Log in</button>
+            </p>
+            <p>{result}</p>
+            <p>{JSON.stringify(cards)}</p>
+          </form>
+        )}
+        {userInfo.loggedIn && (
+          <div>
+            <p>Hallo {userInfo?.user}</p>
+            <p>
+              <button onClick={getCards}>get Cards</button>
+            </p>
+          </div>
+        )}
       </div>
       <div className="PlayingSurface">
         <div className="player ActivePlayer">
