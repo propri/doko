@@ -12,7 +12,7 @@ export default function playCard(
   spieler: Spieler,
   karte: Card,
   numCards: number
-) {
+): void {
   // TODO: spieler nach value bestimmen
   if (game.naechsterSpieler !== spieler) {
     throw Error('Spieler nicht am Zug')

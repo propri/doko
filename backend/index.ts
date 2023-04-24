@@ -3,7 +3,7 @@ import sessions from 'express-session'
 import cookieParser from 'cookie-parser'
 
 import { Position } from './types'
-import { startGame } from './game'
+import { playCard, startGame } from './game'
 import type { Spieler } from './game'
 
 const SECRET = process.env.SECRET || 'supersecret-secret'
@@ -26,6 +26,8 @@ const passwords: Record<string, string> = {
 interface mySessionData extends sessions.Session {
   userid?: string
 }
+
+const numCards = 12
 
 // parse cookies
 app.use(cookieParser())
@@ -75,7 +77,7 @@ const spieler: Spieler[] = [
 ]
 
 /* ein spiel starten */
-const game = startGame(spieler, 12)
+const game = startGame(spieler, numCards)
 
 /* route, auf der user sich einloggen können */
 app.post('/login', (req, res) => {
@@ -109,6 +111,26 @@ app.get('/my-cards', (req, res) => {
   /*res.redirect('/login')*/
 })
 
+app.post('/play-card', (req, res, next) => {
+  console.log('foobar')
+  try {
+    const session: mySessionData = req.session
+    if (session.userid) {
+      const currentPlayer: Spieler = game.spieler.find((s) => {
+        return session.userid === s.name
+      }) as Spieler
+      if (!req.body.card) {
+        throw Error('no card')
+      }
+      playCard(game, currentPlayer, req.body.card, numCards)
+      res.json({ message: 'success' })
+    }
+  } catch (e) {
+    console.log('barfoo')
+    next(e)
+  }
+})
+
 app.get('/userinfo', (req, res) => {
   const session: mySessionData = req.session
   if (session.userid) {
@@ -117,8 +139,6 @@ app.get('/userinfo', (req, res) => {
     res.json({ message: { loggedIn: false } })
   }
 })
-
-/* TODO: route, die user info ausgibt? */
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)
