@@ -1,6 +1,7 @@
-import { Card } from '../common/cards'
+import type { Card } from '../common/cards'
+import serializeCard from './serializeCard'
 
-export const displayOrder = {
+export const displayOrder: Record<string, number> = {
   // Trumpf
   'Herz 10': 5,
   'Kreuz Dame': 6,
@@ -31,9 +32,36 @@ export const displayOrder = {
   'Herz 9': 47,
 }
 
-export const CardFront = ({ card }: { card: Card }) => (
-  <img width="150" src={card.face} alt={`${card.farbe} ${card.wert}`} />
-)
+export function sortCards(cards: Card[]): void {
+  cards.sort(
+    (cardA, cardB) =>
+      displayOrder[serializeCard(cardA)] - displayOrder[serializeCard(cardB)]
+  )
+}
+
+export const CardFront = ({ card }: { card: Card }) => {
+  const clickHandler = () => {
+    fetch('/play-card', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        card,
+      }),
+    })
+      .then((res) => res.json())
+      .then((dt) => console.log(dt))
+  }
+  return (
+    <img
+      width="150"
+      src={card.face}
+      alt={`${card.farbe} ${card.wert}`}
+      onClick={clickHandler}
+    />
+  )
+}
 
 export const CardBack = ({ card }: { card: Card }) => (
   <img width="150" src={card.back} alt="Karte" />
