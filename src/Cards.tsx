@@ -25,7 +25,7 @@ export const displayOrder: Record<string, number> = {
   'Pik Ass': 35,
   'Pik 10': 36,
   'Pik Koenig': 37,
-  'Pik 9': 36,
+  'Pik 9': 38,
   // Herz
   'Herz Ass': 45,
   'Herz Koenig': 46,
