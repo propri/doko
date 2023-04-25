@@ -25,6 +25,7 @@ const passwords: Record<string, string> = {
 /* daten, die in der session gespeichert werden */
 interface mySessionData extends sessions.Session {
   userid?: string
+  position?: Position
 }
 
 const numCards = 12
@@ -90,7 +91,10 @@ app.post('/login', (req, res) => {
   ) {
     const session: mySessionData = req.session
     session.userid = req.body.username
-    console.log(req.session)
+    const currentSpieler = spieler.find(
+      (_s) => _s.name === req.body.username
+    ) as Spieler
+    session.position = currentSpieler.position
     res.json({ message: 'successful' })
   } else {
     res.status(403)
@@ -131,6 +135,7 @@ app.post('/play-card', (req, res, next) => {
   }
 })
 
+/* info über aktuellen spieler */
 app.get('/userinfo', (req, res) => {
   const session: mySessionData = req.session
   if (session.userid) {
@@ -138,6 +143,31 @@ app.get('/userinfo', (req, res) => {
   } else {
     res.json({ message: { loggedIn: false } })
   }
+})
+
+/* info über (alle) spieler */
+app.get('/player-info', (_, res) => {
+  res.json([
+    ...game.spieler.map((s) => ({
+      name: s.name,
+      position: s.position,
+      cardsNumber: s.cards.length,
+      geber: s.geber,
+    })),
+  ])
+})
+
+/* info aktueller Stich */
+app.get('/stich', (_, res) => {
+  res.json([
+    ...game.aktuellerStich.gespielteKarten.map(({ spieler, card }) => ({
+      card,
+      spieler: {
+        position: spieler.position,
+        name: spieler.name,
+      },
+    })),
+  ])
 })
 
 app.listen(PORT, () => {
