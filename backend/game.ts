@@ -20,7 +20,7 @@ export interface Spieler {
 }
 
 export interface Stich {
-  // TODO: kann gelöscht werden, wird nicht benutzt?
+  // TODO: kann gelöscht werden, wird nicht benutzt? (stattdessen wird erste karte in gespielteKarten verwendet)
   anspiel?: Card
   gespielteKarten: {
     spieler: Spieler

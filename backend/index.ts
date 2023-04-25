@@ -170,6 +170,16 @@ app.get('/stich', (_, res) => {
   ])
 })
 
+/* welcher Spieler spielt die nächste Karte */
+app.get('/naechste-karte', (_, res) => {
+  res.json({
+    spieler: {
+      ...game.naechsterSpieler,
+      cards: [],
+    },
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)
 })
