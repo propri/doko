@@ -182,3 +182,9 @@ app.get('/naechste-karte', (_, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)
 })
+
+// error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
