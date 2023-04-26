@@ -28,9 +28,14 @@ export default function getStichGewinner(game: Game): Spieler {
         if (!currentValue.card.trumpf) {
           return previousValue
         }
+        if (!defaultTrumpfOrder[serializeCard(currentValue.card)]) {
+          console.log(
+            `trumpf nicht erkannt - ${serializeCard(currentValue.card)}`
+          )
+        }
         if (
-          defaultTrumpfOrder[serializeCard(currentValue.card)] ??
-          99 < defaultTrumpfOrder[serializeCard(previousValue.card) ?? 99]
+          (defaultTrumpfOrder[serializeCard(currentValue.card)] ?? 99) <
+          defaultTrumpfOrder[serializeCard(previousValue.card) ?? 99]
         ) {
           return currentValue
         }
