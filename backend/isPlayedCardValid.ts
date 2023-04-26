@@ -1,6 +1,11 @@
 import { Card } from '../common/cards'
 import { Game } from './game'
 
+/* Prüfen, ob die gespielte Karte erlaubt ist zu spielen.
+ * - Trumpf muss bedient werden, wenn angespielt und Spieler hat Trumpf
+ * - Fehl muss bedient werden, wenn angespielt und Spieler hat farbe
+ * - Andernfalls beliebige Karte gespielt werden
+ */
 export default function isPlayedCardValid(
   game: Game,
   karte: Card,
@@ -21,11 +26,13 @@ export default function isPlayedCardValid(
     return true
   }
   // Fehlfarbe ist angespielt, wird bedient
-  if (angespielt.farbe === karte.farbe) {
+  // darf kein trumpf sein!
+  if (angespielt.farbe === karte.farbe && !karte.trumpf) {
     return true
   }
   // Fehlfarbe ist angespielt, Spieler hat Fehlfarbe nicht mehr
-  if (!hand.find((c) => c.farbe === angespielt.farbe)) {
+  // -> trumpf muss ausgenommen werden beim check ob spieler farbe hat (pik dame zählt nicht als pik fehl)
+  if (!hand.find((c) => c.farbe === angespielt.farbe && !c.trumpf)) {
     return true
   }
   return false
