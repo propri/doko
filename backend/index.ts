@@ -179,6 +179,20 @@ app.get('/naechste-karte', (_, res) => {
   })
 })
 
+/* alle bis jetzt (vollständig) gespielte stiche. spieler gefiltert */
+app.get('/debug/stiche', (_, res) => {
+  res.json(
+    game.alleStiche.map((s) => ({
+      ...s,
+      gewinner: s.gewinner?.name ?? '',
+      gespielteKarten: s.gespielteKarten.map((gs) => ({
+        ...gs,
+        spieler: gs.spieler.name,
+      })),
+    }))
+  )
+})
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)
 })
