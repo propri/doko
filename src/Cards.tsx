@@ -49,10 +49,9 @@ export const CardFront = ({ card }: { card: Card }) => {
       body: JSON.stringify({
         card,
       }),
-    })
-      .then((res) => res.json())
-      .then((dt) => console.log(dt))
+    }).then((res) => res.json())
   }
+
   return (
     <img
       width="150"
