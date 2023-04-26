@@ -105,7 +105,6 @@ app.post('/login', (req, res) => {
 app.get('/my-cards', (req, res) => {
   const session: mySessionData = req.session
   if (session.userid) {
-    console.log(`Spieler erkannt: ${session.userid}`)
     // was, wenn wir keinen spieler finden?
     const currentPlayer: Spieler = game.spieler.find((s) => {
       return session.userid === s.name
@@ -116,7 +115,6 @@ app.get('/my-cards', (req, res) => {
 })
 
 app.post('/play-card', (req, res, next) => {
-  console.log('foobar')
   try {
     const session: mySessionData = req.session
     if (session.userid) {
@@ -130,7 +128,6 @@ app.post('/play-card', (req, res, next) => {
       res.json({ message: 'success' })
     }
   } catch (e) {
-    console.log('barfoo')
     next(e)
   }
 })
