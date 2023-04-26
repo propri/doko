@@ -2,9 +2,9 @@
 
 ## Backend
 
-- backend/game aufsplitten in einzelne Dateien
++ backend/game aufsplitten in einzelne Dateien
 - Funktionen vertesten
-- Sessions / Authentifizierung
++ Sessions / Authentifizierung
 - Routen für Gameplay anlegen + anbinden
 - Karten austeilen und Spielstart trennen (Ansagen (9er, Armut, Solo) etc.)
 - Routen zum Einrichten der Spieler?
@@ -14,10 +14,14 @@
 
 - Kartenhand darstellen ("manuell" ausrichten?)
 - Stiche darstellen
-- Karten aus dem Frontend spielen
-
++ Karten aus dem Frontend spielen
+- Übergänge sauberer gestalten (zB. Karten Updaten nach Login, keine Karten wenn nicht eingeloggt)
+- Anzahl Requests reduzieren
+  - zB. turnCounter
+  - hauptsächlich um Netzwerktab in Devtools zu entcluttern)
+- Gewinner von Trumpf Stichen fehlerhaft?
 
 ## Technisch
 
-- react-query
++ react-query
 - trpc
