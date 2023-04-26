@@ -126,6 +126,8 @@ app.post('/play-card', (req, res, next) => {
       }
       playCard(game, currentPlayer, req.body.card, numCards)
       res.json({ message: 'success' })
+    } else {
+      next()
     }
   } catch (e) {
     next(e)
