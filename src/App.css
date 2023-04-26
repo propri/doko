@@ -4,54 +4,70 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  font-size: 2em;
 }
 
 .PlayingSurface {
-    background: #086805;
-    height: 100%;
-    width: 100%;
-    position: absolute;
+  background: #086805;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 .player {
-    position: absolute;
-    height: 20%;
-    width: 70%;
-    display: flex;
-    flex-direction: row;
+  position: absolute;
+  height: 20%;
+  width: 70%;
+  display: flex;
+  flex-direction: row;
 }
 
 .PlayerLeft {
-    left: 10px;
-    top: 10%;
-    transform: rotateZ(90deg) scale(0.6);
+  left: 10px;
+  top: 10%;
+  transform: rotateZ(90deg) scale(0.6);
 }
 
 .PlayerRight {
-    transform: rotateZ(270deg) scale(0.6);
-    right: 10px;
-    bottom: 10%;
+  transform: rotateZ(270deg) scale(0.6);
+  right: 10px;
+  bottom: 10%;
 }
 
 .PlayerTop {
-    transform: rotateZ(180deg) scale(0.6);
-    top: 10px;
-    right: 10%;
+  transform: rotateZ(180deg) scale(0.6);
+  top: 10px;
+  right: 10%;
 }
 
 .ActivePlayer {
-    bottom: 10px;
-    left: 10%;
+  bottom: 10px;
+  left: 10%;
 }
 
 .card {
-    display: inline-block;
-    flex-shrink: 2;
-    position: relative;
-    transition: bottom 0.5s;
+  display: inline-block;
+  flex-shrink: 2;
+  position: relative;
+  transition: bottom 0.5s;
+}
+.card > img {
+  width: 120px;
 }
 .ActivePlayer .card:hover {
-    outline: 3px solid blue;
-    bottom: 5%;
+  outline: 3px solid blue;
+  bottom: 5%;
 }
 
+#debug {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 50%;
+}
+
+#debug > button {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
