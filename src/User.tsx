@@ -1,12 +1,43 @@
 import React, { useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 export default function Login() {
-  const [result, setResult] = useState({ message: '' })
+  //const [result, setResult] = useState({ message: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const queryClient = useQueryClient()
+
+  const { mutate: login } = useMutation({
+    mutationFn: async ({
+      username,
+      password,
+    }: {
+      username: string
+      password: string
+    }) => {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      })
+      //.then((res) => res.json())
+      //.then((dt) => setResult(dt.message))
+      if (!response.ok) {
+        throw new Error('Network response not OK')
+      }
+      //setResult(await response.json())
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userinfo'] })
+      queryClient.invalidateQueries({ queryKey: ['my-cards'] })
+    },
+  })
 
   const {
     //isLoading,
@@ -36,24 +67,7 @@ export default function Login() {
 
   const handleLogin = async (ev: any) => {
     ev.preventDefault()
-    const response = await fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    })
-    //.then((res) => res.json())
-    //.then((dt) => setResult(dt.message))
-    if (!response.ok) {
-      throw new Error('Network response not OK')
-    }
-    await queryClient.invalidateQueries({ queryKey: ['userinfo'] })
-    await queryClient.invalidateQueries({ queryKey: ['my-cards'] })
-    setResult(await response.json())
+    login({ username, password })
   }
 
   if (userInfo?.message?.loggedIn) {
@@ -83,7 +97,6 @@ export default function Login() {
           <p>
             <button type="submit">Log in</button>
           </p>
-          <p>{result?.message}</p>
         </form>
       )}
     </div>

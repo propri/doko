@@ -110,6 +110,8 @@ app.get('/my-cards', (req, res) => {
       return session.userid === s.name
     }) as Spieler
     res.json(currentPlayer.cards)
+  } else {
+    throw new Error('not logged in')
   }
   /*res.redirect('/login')*/
 })

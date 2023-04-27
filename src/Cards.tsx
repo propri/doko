@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 import type { Card } from '../common/cards'
 import serializeCard from './serializeCard'
 
@@ -40,24 +42,32 @@ export function sortCards(cards: Card[]): void {
 }
 
 export const CardFront = ({ card }: { card: Card }) => {
-  const clickHandler = () => {
-    fetch('/play-card', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        card,
-      }),
-    }).then((res) => res.json())
-  }
+  const queryClient = useQueryClient()
+
+  const { mutate: playCard } = useMutation({
+    mutationFn: async () => {
+      fetch('/play-card', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          card,
+        }),
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['my-cards'])
+      queryClient.invalidateQueries(['stich'])
+    },
+  })
 
   return (
     <img
       width="150"
       src={card.face}
       alt={`${card.farbe} ${card.wert}`}
-      onClick={clickHandler}
+      onClick={() => playCard()}
     />
   )
 }
