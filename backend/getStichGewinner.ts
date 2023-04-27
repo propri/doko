@@ -35,7 +35,7 @@ export default function getStichGewinner(game: Game): Spieler {
         }
         if (
           (defaultTrumpfOrder[serializeCard(currentValue.card)] ?? 99) <
-          defaultTrumpfOrder[serializeCard(previousValue.card) ?? 99]
+          (defaultTrumpfOrder[serializeCard(previousValue.card)] ?? 99)
         ) {
           return currentValue
         }
