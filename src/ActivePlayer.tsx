@@ -10,7 +10,6 @@ export default function ActivePlayer() {
   const { data: cards } = useQuery({
     queryKey: ['my-cards'],
     queryFn: async (): Promise<Card[]> => {
-      console.log('(re)fetch cards')
       const response = await fetch('/my-cards')
       if (!response.ok) {
         throw new Error('Network response not OK')
