@@ -182,6 +182,7 @@ app.get('/naechste-karte', (_, res) => {
 })
 
 /* alle bis jetzt (vollständig) gespielte stiche. spieler gefiltert */
+/*
 app.get('/debug/stiche', (_, res) => {
   res.json(
     game.alleStiche.map((s) => ({
@@ -194,6 +195,7 @@ app.get('/debug/stiche', (_, res) => {
     }))
   )
 })
+*/
 
 app.get('/letzter-stich', (_, res) => {
   if (game.alleStiche.length === 0) {

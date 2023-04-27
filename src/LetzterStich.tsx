@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 
-const Debug = () => {
+const LetzterStich = () => {
   const [hidden, setHidden] = useState(true)
   const { data: stiche } = useQuery({
-    queryKey: ['debug', 'stiche'],
+    queryKey: ['letzter-stiche'],
     queryFn: async () => {
-      const response = await fetch('/debug/stiche')
+      const response = await fetch('/letzter-stich')
       if (!response.ok) {
         throw new Error('Networ error')
       }
@@ -18,7 +18,9 @@ const Debug = () => {
 
   return (
     <div id="debug">
-      <button onClick={() => setHidden((ov) => !ov)}>Toggle Debug</button>
+      <button onClick={() => setHidden((ov) => !ov)}>
+        Toggle Letzter Stich
+      </button>
       {!hidden && (
         <textarea cols={80} rows={40}>
           {JSON.stringify(stiche, undefined, 2)}
@@ -28,4 +30,4 @@ const Debug = () => {
   )
 }
 
-export default Debug
+export default LetzterStich

@@ -5,7 +5,7 @@ import ActivePlayer from './ActivePlayer'
 import Player from './Player'
 import Stich from './Stich'
 import Next from './Next'
-import Debug from './Debug'
+import LetzterStich from './LetzterStich'
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         <ActivePlayer />
         <Stich />
         <Next />
-        <Debug />
+        <LetzterStich />
       </div>
       {/*
         <div className="player PlayerLeft">
