@@ -7,19 +7,27 @@ import Stich from './Stich'
 import Next from './Next'
 import LetzterStich from './LetzterStich'
 
+import { useUserInfo } from './api'
+
 function App() {
+  const { data: userInfo } = useUserInfo()
+
   return (
     <div className="App">
       <div className="PlayingSurface">
         {/* login etc.*/}
         <User />
-        <Player position="left" />
-        <Player position="top" />
-        <Player position="right" />
-        <ActivePlayer />
-        <Stich />
-        <Next />
-        <LetzterStich />
+        {userInfo?.loggedIn && (
+          <>
+            <Player position="left" />
+            <Player position="top" />
+            <Player position="right" />
+            <ActivePlayer />
+            <Stich />
+            <Next />
+            <LetzterStich />
+          </>
+        )}
       </div>
       {/*
         <div className="player PlayerLeft">

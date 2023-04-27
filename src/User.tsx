@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+
+import { useUserInfo } from './api'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -35,29 +37,20 @@ export default function Login() {
     },
   })
 
-  const { data: userInfo } = useQuery({
-    queryKey: ['userinfo'],
-    queryFn: async () => {
-      const response = await fetch('/userinfo')
-      if (!response.ok) {
-        throw new Error('Network response not OK')
-      }
-      return response.json()
-    },
-  })
+  const { data: userInfo } = useUserInfo()
 
   const handleLogin = async (ev: any) => {
     ev.preventDefault()
     login({ username, password })
   }
 
-  if (userInfo?.message?.loggedIn) {
+  if (userInfo?.loggedIn) {
     return null
   }
 
   return (
     <div>
-      {!userInfo?.message?.loggedIn && (
+      {!userInfo?.loggedIn && (
         <form onSubmit={handleLogin}>
           <p>
             User:

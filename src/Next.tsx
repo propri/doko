@@ -1,19 +1,8 @@
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useNextCard } from './api'
 
 const Next = () => {
-  const { data: next } = useQuery({
-    queryKey: ['naechste-karte'],
-    queryFn: async () => {
-      const response = await fetch('/naechste-karte')
-      if (!response.ok) {
-        throw new Error('Network error')
-      }
-      return response.json()
-    },
-    refetchInterval: 1000, // ms
-  })
-
+  const { data: next } = useNextCard()
   return <div>Nächster Spieler: {next?.spieler?.name}</div>
 }
 

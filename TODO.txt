@@ -20,6 +20,8 @@
   - zB. turnCounter
   - hauptsächlich um Netzwerktab in Devtools zu entcluttern)
 + Gewinner von Trumpf Stichen fehlerhaft?
+- shared Queries auslagern
+  - alle queries auslagern?
 
 ## Technisch
 
