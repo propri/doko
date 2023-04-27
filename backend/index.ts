@@ -140,7 +140,16 @@ app.post('/play-card', (req, res, next) => {
 app.get('/userinfo', (req, res) => {
   const session: mySessionData = req.session
   if (session.userid) {
-    res.json({ message: { loggedIn: true, user: session.userid } })
+    const spieler: Spieler = game.spieler.find(
+      (s) => s.name === session.userid
+    ) as Spieler
+    res.json({
+      message: {
+        loggedIn: true,
+        user: session.userid,
+        position: spieler.position,
+      },
+    })
   } else {
     res.json({ message: { loggedIn: false } })
   }
@@ -218,6 +227,6 @@ app.listen(PORT, () => {
 
 // error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack)
+  //console.error(err.stack)
   res.status(500).send('Something broke!')
 })
