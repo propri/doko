@@ -27,12 +27,15 @@ export default function isPlayedCardValid(
   }
   // Fehlfarbe ist angespielt, wird bedient
   // darf kein trumpf sein!
-  if (angespielt.farbe === karte.farbe && !karte.trumpf) {
+  if (angespielt.farbe === karte.farbe && !karte.trumpf && !angespielt.trumpf) {
     return true
   }
   // Fehlfarbe ist angespielt, Spieler hat Fehlfarbe nicht mehr
   // -> trumpf muss ausgenommen werden beim check ob spieler farbe hat (pik dame zählt nicht als pik fehl)
-  if (!hand.find((c) => c.farbe === angespielt.farbe && !c.trumpf)) {
+  if (
+    !hand.find((c) => c.farbe === angespielt.farbe && !c.trumpf) &&
+    !angespielt.trumpf
+  ) {
     return true
   }
   return false
