@@ -195,6 +195,21 @@ app.get('/debug/stiche', (_, res) => {
   )
 })
 
+app.get('/letzter-stich', (_, res) => {
+  if (game.alleStiche.length === 0) {
+    throw new Error('noch kein Stich gespielt')
+  }
+  const letzterStich = game.alleStiche[game.alleStiche.length - 1]
+  res.json({
+    ...letzterStich,
+    gewinner: letzterStich.gewinner?.name,
+    gespielteKarten: letzterStich.gespielteKarten.map(({ spieler, card }) => ({
+      card,
+      spieler: spieler.name,
+    })),
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT} (via typescript. Yay!)`)
 })
