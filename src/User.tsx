@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 export default function Login() {
-  //const [result, setResult] = useState({ message: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -26,12 +25,9 @@ export default function Login() {
           password,
         }),
       })
-      //.then((res) => res.json())
-      //.then((dt) => setResult(dt.message))
       if (!response.ok) {
         throw new Error('Network response not OK')
       }
-      //setResult(await response.json())
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userinfo'] })
@@ -39,11 +35,7 @@ export default function Login() {
     },
   })
 
-  const {
-    //isLoading,
-    //error,
-    data: userInfo,
-  } = useQuery({
+  const { data: userInfo } = useQuery({
     queryKey: ['userinfo'],
     queryFn: async () => {
       const response = await fetch('/userinfo')
@@ -53,17 +45,6 @@ export default function Login() {
       return response.json()
     },
   })
-
-  //const [userInfo, setUserInfo] = useState<{
-  //loggedIn: boolean
-  //user?: string
-  //}>({ loggedIn: false })
-
-  //useEffect(() => {
-  //fetch('/userinfo')
-  //.then((res) => res.json())
-  //.then((data) => setUserInfo(data.message))
-  //}, [checkAgain])
 
   const handleLogin = async (ev: any) => {
     ev.preventDefault()

@@ -11,6 +11,7 @@ const Next = () => {
       }
       return response.json()
     },
+    refetchInterval: 1000, // ms
   })
 
   return <div>Nächster Spieler: {next?.spieler?.name}</div>

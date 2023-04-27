@@ -4,7 +4,6 @@ import { Card } from '../common/cards'
 import { CardFront, sortCards } from './Cards'
 
 export default function ActivePlayer() {
-  //const cards: Card[] = []
   const cardNumbers = 12
   const offsetBase = cardNumbers / 3
 
@@ -20,18 +19,8 @@ export default function ActivePlayer() {
       sortCards(cards)
       return cards
     },
-    refetchInterval: 1000, //my-cards
+    refetchInterval: 1000, // ms
   })
-
-  //const getCards = (ev: any) => {
-  //ev.preventDefault()
-  //fetch('/my-cards')
-  //.then((res) => res.json())
-  //.then((crds) => {
-  //sortCards(crds)
-  //setCards(crds)
-  //})
-  //}
 
   return (
     <div className="player ActivePlayer">
@@ -40,7 +29,6 @@ export default function ActivePlayer() {
           className="card"
           style={{ left: `-${offsetBase * idx}%` }}
           key={`${card.farbe}-${card.wert}-${card.back}`}
-          //onClick={clickHandler}
         >
           <CardFront card={card} />
         </div>
