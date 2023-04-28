@@ -13,6 +13,10 @@ export default function playCard(
   karte: Card,
   numCards: number
 ): void {
+  // warten, bis letzter Stich abgeräumt ist
+  if (game.aktuellerStich.gespielteKarten.length === 4) {
+    throw Error('aktueller Stich noch nicht abgeschlossen')
+  }
   // TODO: spieler nach value bestimmen
   if (game.naechsterSpieler !== spieler) {
     throw Error('Spieler nicht am Zug')
@@ -50,23 +54,25 @@ export default function playCard(
     card: gespielteKarte,
   })
   if (game.aktuellerStich.gespielteKarten.length === 4) {
-    // bestimmen, wer den Stich gewonnen hat
-    const gewinner: Spieler = getStichGewinner(game)
+    setTimeout(() => {
+      // bestimmen, wer den Stich gewonnen hat
+      const gewinner: Spieler = getStichGewinner(game)
 
-    game.aktuellerStich.gewinner = gewinner
-    // festlegen, dass gewinner den nächsten stich anspielt
-    game.naechsterSpieler = gewinner
-    // Stich in Liste der Stiche einfügen
-    game.alleStiche.push(game.aktuellerStich)
-    // neuen stich vorbereiten
-    game.aktuellerStich = {
-      gespielteKarten: [],
-    }
+      game.aktuellerStich.gewinner = gewinner
+      // festlegen, dass gewinner den nächsten stich anspielt
+      game.naechsterSpieler = gewinner
+      // Stich in Liste der Stiche einfügen
+      game.alleStiche.push(game.aktuellerStich)
+      // neuen stich vorbereiten
+      game.aktuellerStich = {
+        gespielteKarten: [],
+      }
 
-    // alle stiche gemacht?
-    if (game.alleStiche.length === numCards) {
-      game.isFinished = true
-    }
+      // alle stiche gemacht?
+      if (game.alleStiche.length === numCards) {
+        game.isFinished = true
+      }
+    }, 2000)
   } else {
     // nächster Spieler in Reihenfolge ist dran.
     game.naechsterSpieler = getNaechsterSpieler(game, spieler)
