@@ -9,6 +9,8 @@
 - Karten austeilen und Spielstart trennen (Ansagen (9er, Armut, Solo) etc.)
 - Routen zum Einrichten der Spieler?
 
++ stich wechseln nicht automatisch beim spielen der letzten karte?
+  + stich wechseln im backend verzögert?
 
 ## Frontend
 
@@ -22,6 +24,10 @@
 + Gewinner von Trumpf Stichen fehlerhaft?
 - shared Queries auslagern
   - alle queries auslagern?
+- sounds beim ausspielen (austeilen?), "stich einsammeln"
+
+- letzten Stich "schön" anzeigen
+  - Stich komponente generalisieren
 
 ## Technisch
 
