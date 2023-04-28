@@ -1,28 +1,21 @@
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { Card } from '../common/cards'
-import { CardFront, sortCards } from './Cards'
+import { CardFront } from './Cards'
+import { useUserInfo, useNextCard, useMyCards } from './api'
 
 export default function ActivePlayer() {
   const cardNumbers = 12
   const offsetBase = cardNumbers / 3
 
-  const { data: cards } = useQuery({
-    queryKey: ['my-cards'],
-    queryFn: async (): Promise<Card[]> => {
-      const response = await fetch('/my-cards')
-      if (!response.ok) {
-        throw new Error('Network response not OK')
-      }
-      const cards = await response.json()
-      sortCards(cards)
-      return cards
-    },
-    refetchInterval: 1000, // ms
-  })
+  const { data: cards } = useMyCards()
+  const { data: nextCard } = useNextCard()
+  const { data: userInfo } = useUserInfo()
 
   return (
-    <div className="player ActivePlayer">
+    <div
+      className={`player ActivePlayer ${
+        userInfo?.position === nextCard?.spieler.position ? 'next' : ''
+      }`}
+    >
       {cards?.map((card, idx) => (
         <div
           className="card"

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Card } from '../common/cards'
+import { sortCards } from './Cards'
 
 type UserInfo = {
   loggedIn: boolean
@@ -60,4 +61,19 @@ export const useStich = () =>
       return response.json()
     },
     refetchInterval: 1000, //ms
+  })
+
+export const useMyCards = () =>
+  useQuery<Card[]>({
+    queryKey: ['my-cards'],
+    queryFn: async (): Promise<Card[]> => {
+      const response = await fetch('/my-cards')
+      if (!response.ok) {
+        throw new Error('Network response not OK')
+      }
+      const cards = await response.json()
+      sortCards(cards)
+      return cards
+    },
+    refetchInterval: 1000, // ms
   })

@@ -22,6 +22,14 @@
   flex-direction: row;
 }
 
+.Player.next {
+  color: red;
+}
+
+.ActivePlayer.next {
+  border: 1px solid red;
+}
+
 .PlayerLeft {
   left: 10px;
   top: 10%;
