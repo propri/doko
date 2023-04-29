@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useContext } from 'react'
 
 import type { Card } from '../common/cards'
 import serializeCard from './serializeCard'
+import CardStyleContext from './CardStyleContext'
 
 export const displayOrder: Record<string, number> = {
   // Trumpf
@@ -43,6 +45,7 @@ export function sortCards(cards: Card[]): void {
 
 export const CardFront = ({ card }: { card: Card }) => {
   const queryClient = useQueryClient()
+  const cardStyle = useContext(CardStyleContext)
 
   const { mutate: playCard } = useMutation({
     mutationFn: async () => {
@@ -62,16 +65,24 @@ export const CardFront = ({ card }: { card: Card }) => {
     },
   })
 
+  if (!cardStyle) {
+    return null
+  }
+
   return (
     <img
       width="150"
-      src={card.face}
+      src={`${cardStyle.style}/${card.face}`}
       alt={`${card.farbe} ${card.wert}`}
       onClick={() => playCard()}
     />
   )
 }
 
-export const CardBack = ({ card }: { card: Card }) => (
-  <img width="150" src={card.back} alt="Karte" />
-)
+export const CardBack = ({ card }: { card: Card }) => {
+  const cardStyle = useContext(CardStyleContext)
+  if (!cardStyle) {
+    return null
+  }
+  return <img width="150" src={`${cardStyle.style}/${card.back}`} alt="Karte" />
+}

@@ -6,6 +6,7 @@ import Player from './Player'
 import Stich from './Stich'
 import Next from './Next'
 import LetzterStich from './LetzterStich'
+import CardStyleSelector from './CardStyleSelector'
 
 import { useUserInfo } from './api'
 
@@ -19,6 +20,7 @@ function App() {
         <User />
         {userInfo?.loggedIn && (
           <>
+            <CardStyleSelector />
             <Player position="left" />
             <Player position="top" />
             <Player position="right" />

@@ -1,0 +1,17 @@
+Card backs by jeffshee
+https://opengameart.org/content/colorful-poker-card-back
+
+CC-BY 3.0
+https://creativecommons.org/licenses/by/3.0/
+
+
+Card fronts by Byron Knoll
+https://opengameart.org/content/playing-cards-vector-png
+
+CC0
+https://creativecommons.org/publicdomain/zero/1.0/
+
+
+Cardsets from aisleriot
+https://gitlab.gnome.org/GNOME/aisleriot
+For details see corresponding Readme files
