@@ -77,3 +77,25 @@ export const useMyCards = () =>
     },
     refetchInterval: 1000, // ms
   })
+
+interface Spieler {
+  name: string
+}
+
+interface Punkte {
+  spieler: Spieler
+  punkte: number
+}
+
+export const usePunkte = () =>
+  useQuery<Punkte[]>({
+    queryKey: ['punkte'],
+    queryFn: async () => {
+      const response = await fetch('/punkte')
+      if (!response.ok) {
+        throw new Error('keine Punkte')
+      }
+      return response.json()
+    },
+    refetchInterval: 3000, //ms
+  })

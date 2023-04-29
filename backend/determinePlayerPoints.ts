@@ -6,7 +6,7 @@ export default function determinePlayerPoints(
   numCards: number
 ): { spieler: Spieler; punkte: number }[] {
   if (game.alleStiche.length !== numCards) {
-    throw Error('noch nicht alle Stiche gespielt')
+    throw new Error('noch nicht alle Stiche gespielt')
   }
 
   const result = game.spieler.map((s) => ({

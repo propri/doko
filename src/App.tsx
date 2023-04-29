@@ -7,6 +7,7 @@ import Stich from './Stich'
 import Next from './Next'
 import LetzterStich from './LetzterStich'
 import CardStyleSelector from './CardStyleSelector'
+import Punkte from './Punkte'
 
 import { useUserInfo } from './api'
 
@@ -28,6 +29,7 @@ function App() {
             <Stich />
             <Next />
             <LetzterStich />
+            <Punkte />
           </>
         )}
       </div>

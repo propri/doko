@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import { Position } from './types'
 import { playCard, startGame } from './game'
 import type { Spieler } from './game'
+import determinePlayerPoints from './determinePlayerPoints'
 
 const SECRET = process.env.SECRET || 'supersecret-secret'
 const PORT = process.env.PORT || 3001
@@ -219,6 +220,14 @@ app.get('/letzter-stich', (_, res) => {
       spieler: spieler.name,
     })),
   })
+})
+
+app.get('/punkte', (_, res) => {
+  try {
+    res.json(determinePlayerPoints(game, numCards))
+  } catch (e) {
+    res.status(204).end()
+  }
 })
 
 app.listen(PORT, () => {
