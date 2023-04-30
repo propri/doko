@@ -6,6 +6,7 @@ import { Position } from './types'
 import { playCard, startGame } from './game'
 import type { Spieler } from './game'
 import determinePlayerPoints from './determinePlayerPoints'
+import { isNextGeber } from './nextGeber'
 
 const SECRET = process.env.SECRET || 'supersecret-secret'
 const PORT = process.env.PORT || 3001
@@ -30,6 +31,8 @@ interface mySessionData extends sessions.Session {
 }
 
 const numCards = 12
+
+let canStartNextRound = false
 
 // parse cookies
 app.use(cookieParser())
@@ -79,7 +82,7 @@ const spieler: Spieler[] = [
 ]
 
 /* ein spiel starten */
-const game = startGame(spieler, numCards)
+let game = startGame(spieler, numCards)
 
 /* route, auf der user sich einloggen können */
 app.post('/login', (req, res) => {
@@ -225,9 +228,47 @@ app.get('/letzter-stich', (_, res) => {
 app.get('/punkte', (_, res) => {
   try {
     res.json(determinePlayerPoints(game, numCards))
+    setTimeout(() => {
+      canStartNextRound = true
+    }, 5000)
   } catch (e) {
     res.status(204).end()
   }
+})
+
+function canStartNextRoundTest(userId: string): boolean {
+  if (isNextGeber(spieler, userId)) {
+    return canStartNextRound
+  }
+
+  return false
+}
+
+app.get('/canstartnextround', (req, res) => {
+  const session: mySessionData = req.session
+  if (!session?.userid) {
+    res.status(403).end('needs authentication')
+    return
+  }
+
+  res.json({ canStartNextRound: canStartNextRoundTest(session.userid) })
+})
+
+app.get('/naechste-runde', (req, res) => {
+  const session: mySessionData = req.session
+  if (!session?.userid) {
+    res.status(403).end('needs authentication')
+    return
+  }
+  if (!canStartNextRoundTest(session.userid)) {
+    res.status(400).end('cannot start next round')
+    return
+  }
+  canStartNextRound = false
+  game = startGame(spieler, numCards)
+  setTimeout(() => {
+    res.status(204).end()
+  }, 500)
 })
 
 app.listen(PORT, () => {

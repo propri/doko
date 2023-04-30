@@ -97,5 +97,18 @@ export const usePunkte = () =>
       }
       return response.json()
     },
-    refetchInterval: 3000, //ms
+    refetchInterval: 1000, //ms
+  })
+
+export const useCanStartNextRound = () =>
+  useQuery<{ canStartNextRound: boolean }>({
+    queryKey: ['canstartnextround'],
+    queryFn: async () => {
+      const response = await fetch('/canstartnextround')
+      if (!response.ok) {
+        throw new Error('kann naechste Runde nicht starten')
+      }
+      return response.json()
+    },
+    refetchInterval: 1000, // ms
   })

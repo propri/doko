@@ -3,6 +3,7 @@ import { SpielTyp } from './types'
 import setTrumpf from './setTrumpf'
 import getNaechsterSpieler from './getNaechsterSpieler'
 import { Spieler, Game } from './game'
+import setupNextGeber from './nextGeber'
 
 export default function startGame(spieler: Spieler[], numCards: number): Game {
   if (spieler.length !== 4) {
@@ -22,9 +23,11 @@ export default function startGame(spieler: Spieler[], numCards: number): Game {
   }
   const cards = shuffle([...Karten])
   setTrumpf(cards, SpielTyp.default)
+
+  setupNextGeber(spieler)
+
   game.spieler = spieler.map((s, idx) => ({
     ...s,
-    geber: idx === 0,
     cards: cards.slice(idx * numCards, (idx + 1) * numCards),
   }))
 

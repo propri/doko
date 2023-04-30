@@ -1,15 +1,26 @@
 import React from 'react'
+import { useMutation } from '@tanstack/react-query'
 
-import { usePunkte } from './api'
+import { usePunkte, useCanStartNextRound } from './api'
 
 const Punkte = () => {
   const { data: punkte, error } = usePunkte()
 
-  if (error || !punkte) {
+  const { data } = useCanStartNextRound()
+
+  const { mutate: austeilen, isLoading } = useMutation({
+    mutationKey: ['startnextround'],
+    mutationFn: async () => {
+      const response = await fetch('/naechste-runde')
+      if (!response.ok) {
+        throw new Error('Naechste Runde kann noch nicht gestartet werden')
+      }
+    },
+  })
+
+  if (error || !punkte || !data) {
     return null
   }
-
-  console.log(punkte)
 
   return (
     <div id="punkte">
@@ -29,6 +40,11 @@ const Punkte = () => {
           ))}
         </tbody>
       </table>
+      {data?.canStartNextRound && (
+        <button disabled={isLoading} onClick={() => austeilen()}>
+          Karten geben
+        </button>
+      )}
     </div>
   )
 }
