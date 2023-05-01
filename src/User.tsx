@@ -5,18 +5,11 @@ import { useUserInfo } from './api'
 
 export default function Login() {
   const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   const queryClient = useQueryClient()
 
   const { mutate: login } = useMutation({
-    mutationFn: async ({
-      username,
-      password,
-    }: {
-      username: string
-      password: string
-    }) => {
+    mutationFn: async ({ username }: { username: string }) => {
       const response = await fetch('/login', {
         method: 'POST',
         headers: {
@@ -24,7 +17,6 @@ export default function Login() {
         },
         body: JSON.stringify({
           username,
-          password,
         }),
       })
       if (!response.ok) {
@@ -41,7 +33,7 @@ export default function Login() {
 
   const handleLogin = async (ev: any) => {
     ev.preventDefault()
-    login({ username, password })
+    login({ username })
   }
 
   if (userInfo?.loggedIn) {
@@ -53,7 +45,7 @@ export default function Login() {
       {!userInfo?.loggedIn && (
         <form onSubmit={handleLogin}>
           <p>
-            User:
+            Username:
             <input
               type="text"
               value={username}
@@ -61,15 +53,7 @@ export default function Login() {
             />
           </p>
           <p>
-            Passord:
-            <input
-              type="password"
-              value={password}
-              onChange={(ev) => setPassword(ev.target.value)}
-            />
-          </p>
-          <p>
-            <button type="submit">Log in</button>
+            <button type="submit">Username festlegen</button>
           </p>
         </form>
       )}

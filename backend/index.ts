@@ -2,9 +2,9 @@ import express from 'express'
 import sessions from 'express-session'
 import cookieParser from 'cookie-parser'
 
-import { Position } from './types'
+import { Position, positions } from './types'
 import { playCard, startGame } from './game'
-import type { Spieler } from './game'
+import type { Spieler, Game } from './game'
 import determinePlayerPoints from './determinePlayerPoints'
 import { isNextGeber } from './nextGeber'
 
@@ -15,14 +15,6 @@ const PORT = process.env.PORT || 3001
 const maxAge = 24 * 60 * 60 * 1000
 
 const app = express()
-
-// passwörter zum einloggen
-const passwords: Record<string, string> = {
-  'Spieler A': 'foobarA',
-  'Spieler B': 'foobarB',
-  'Spieler C': 'foobarC',
-  'Spieler D': 'foobarD',
-}
 
 /* daten, die in der session gespeichert werden */
 interface mySessionData extends sessions.Session {
@@ -54,51 +46,32 @@ app.use(
   })
 )
 
-const spieler: Spieler[] = [
-  {
-    name: 'Spieler A',
-    position: Position.A,
-    cards: [],
-    geber: false,
-  },
-  {
-    name: 'Spieler B',
-    position: Position.B,
-    cards: [],
-    geber: false,
-  },
-  {
-    name: 'Spieler C',
-    position: Position.C,
-    cards: [],
-    geber: false,
-  },
-  {
-    name: 'Spieler D',
-    position: Position.D,
-    cards: [],
-    geber: false,
-  },
-]
+const spieler: Spieler[] = []
 
-/* ein spiel starten */
-let game = startGame(spieler, numCards)
+let game: Game
 
 /* route, auf der user sich einloggen können */
 app.post('/login', (req, res) => {
-  if (
-    req.body.username &&
-    typeof req.body.username === 'string' &&
-    req.body?.password &&
-    typeof req.body.password === 'string' &&
-    passwords[req.body.username] === req.body.password
-  ) {
+  if (req.body.username && typeof req.body.username === 'string') {
     const session: mySessionData = req.session
+    if (spieler.find(({ name }) => name === req.body.username)) {
+      res.status(400).end('name already exists')
+      return
+    }
+    if (spieler.length >= 4) {
+      res.status(400).end('spiel voll')
+    }
     session.userid = req.body.username
-    const currentSpieler = spieler.find(
-      (_s) => _s.name === req.body.username
-    ) as Spieler
-    session.position = currentSpieler.position
+    const newPlayer: Spieler = {
+      name: req.body.username,
+      position: positions[spieler.length],
+      cards: [],
+      geber: false,
+    }
+    spieler.push(newPlayer)
+    if (spieler.length === 4) {
+      game = startGame(spieler, 12)
+    }
     res.json({ message: 'successful' })
   } else {
     res.status(403)
@@ -144,14 +117,15 @@ app.post('/play-card', (req, res, next) => {
 app.get('/userinfo', (req, res) => {
   const session: mySessionData = req.session
   if (session.userid) {
-    const spieler: Spieler = game.spieler.find(
+    /* game eventuell nicht gesetzt */
+    const currentSpieler: Spieler = spieler.find(
       (s) => s.name === session.userid
     ) as Spieler
     res.json({
       message: {
         loggedIn: true,
         user: session.userid,
-        position: spieler.position,
+        position: currentSpieler.position,
       },
     })
   } else {
