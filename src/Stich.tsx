@@ -27,16 +27,6 @@ const Stich = () => {
 
   return (
     <>
-      <div>
-        <p>aktueller Stich</p>
-        {stichData?.map(({ card, spieler }) => (
-          <p key={`${card.wert}-${card.farbe}-${spieler.position}`}>
-            {card.wert}
-            {card.farbe}
-            {spieler.name}
-          </p>
-        ))}
-      </div>
       <div id="stich">
         <div>
           {stichData?.map((sc, idx) => (

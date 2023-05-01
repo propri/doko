@@ -23,6 +23,28 @@
   flex-direction: row;
 }
 
+.Player {
+  position: fixed;
+  display: inline-block;
+  width: 200px;
+  height: 50px;
+}
+
+.Player.left {
+  left: 0;
+  top: calc(50% - 25px);
+}
+
+.Player.top {
+  left: calc(50% - 100px);
+  top: 0;
+}
+
+.Player.right {
+  right: 0;
+  top: calc(50% - 25px);
+}
+
 .Player.next {
   color: red;
 }
@@ -65,7 +87,7 @@
   height: auto;
 }
 .ActivePlayer .card:hover {
-  outline: 3px solid blue;
+  /*outline: 3px solid blue;*/
   bottom: 5%;
 }
 
@@ -125,9 +147,11 @@
 }
 
 #debug > button {
+  margin: 0.5em;
   position: fixed;
   top: 0;
   left: 0;
+  font-size: 0.8em;
 }
 
 #punkte {
@@ -138,4 +162,25 @@
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.activeName {
+  position: fixed;
+  display: inline-block;
+  bottom: 0;
+  width: 200px;
+  left: calc(50% - 100px);
+}
+
+.activeName.next {
+  color: red;
+}
+
+.selectCardStyle {
+  text-align: right;
+  margin-right: 1em;
+}
+
+.selectCardStyle select {
+  font-size: 0.75em;
 }

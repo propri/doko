@@ -10,21 +10,30 @@ export default function ActivePlayer() {
   const { data: nextCard } = useNextCard()
   const { data: userInfo } = useUserInfo()
 
+  if (!userInfo) {
+    return null
+  }
+
   return (
-    <div
-      className={`player ActivePlayer ${
-        userInfo?.position === nextCard?.spieler.position ? 'next' : ''
-      }`}
-    >
-      {cards?.map((card, idx) => (
-        <div
-          className="card"
-          style={{ left: `-${offsetBase * idx}%` }}
-          key={`${card.farbe}-${card.wert}-${card.back}`}
-        >
-          <CardFront card={card} />
-        </div>
-      ))}
-    </div>
+    <>
+      <div className={`player ActivePlayer`}>
+        {cards?.map((card, idx) => (
+          <div
+            className="card"
+            style={{ left: `-${offsetBase * idx}%` }}
+            key={`${card.farbe}-${card.wert}-${card.back}`}
+          >
+            <CardFront card={card} />
+          </div>
+        ))}
+      </div>
+      <div
+        className={`activeName ${
+          userInfo?.position === nextCard?.spieler.position ? 'next' : ''
+        }`}
+      >
+        {userInfo?.user}
+      </div>
+    </>
   )
 }

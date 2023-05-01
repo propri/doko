@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNextCard, useUserInfo } from './api'
+import { useNextCard, usePlayerInfo, useUserInfo } from './api'
 
 const relativePositions: Record<string, number> = {
   left: 1,
@@ -10,16 +10,21 @@ const relativePositions: Record<string, number> = {
 const Player = ({ position }: { position: string }) => {
   const { data: next } = useNextCard()
   const { data: userInfo } = useUserInfo()
-  if (typeof userInfo?.position !== 'number') {
+  const { data: playerInfo } = usePlayerInfo()
+
+  if (typeof userInfo?.position !== 'number' || !playerInfo) {
     return null
   }
-  const isActive =
-    (userInfo.position + relativePositions[position]) % 4 ===
-    next?.spieler.position
+  const playerPosition = (userInfo.position + relativePositions[position]) % 4
+  const isActive = playerPosition === next?.spieler.position
+
+  const { name, geber }: { name: string; geber: boolean } = playerInfo.find(
+    (p) => p.position === playerPosition
+  ) ?? { name: '', geber: false }
 
   return (
     <div className={`Player ${position} ${isActive ? 'next' : ''}`}>
-      Position: {position}
+      {`${name}${geber ? ' (G)' : ''}`}
     </div>
   )
 }

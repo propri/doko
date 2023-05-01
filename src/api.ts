@@ -112,3 +112,17 @@ export const useCanStartNextRound = () =>
     },
     refetchInterval: 1000, // ms
   })
+
+export const usePlayerInfo = () =>
+  useQuery<
+    { name: string; position: number; cardsNumber: number; geber: boolean }[]
+  >({
+    queryKey: ['player-info'],
+    queryFn: async () => {
+      const response = await fetch('/player-info')
+      if (!response.ok) {
+        throw new Error('Network problem')
+      }
+      return response.json()
+    },
+  })

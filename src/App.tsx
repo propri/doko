@@ -27,42 +27,14 @@ function App() {
             <Player position="right" />
             <ActivePlayer />
             <Stich />
+            {/*
             <Next />
+            */}
             <LetzterStich />
             <Punkte />
           </>
         )}
       </div>
-      {/*
-        <div className="player PlayerLeft">
-          {
-            //playerLeft.map((card, idx) => (
-            //<div className="card" style={{ left: `-${offsetBase * (idx +1)}%`}} key={`${card.suit}-${card.value}-${card.back}`}>
-            //<CardBack card={card} />
-            //</div>
-            //))
-          }
-        </div>
-        <div className="player PlayerTop">
-          {
-            //playerTop.map((card, idx) => (
-            //<div className="card" style={{ left: `-${offsetBase * (idx +1)}%`}} key={`${card.suit}-${card.value}-${card.back}`}>
-            //<CardBack card={card} />
-            //</div>
-            //))
-          }
-        </div>
-        <div className="player PlayerRight">
-          {
-            //playerRight.map((card, idx) => (
-            //<div className="card" style={{ left: `-${offsetBase * (idx +1)}%`}} key={`${card.suit}-${card.value}-${card.back}`}>
-            //<CardBack card={card} />
-            //</div>
-            //))
-          }
-        </div>
-      </div>
-      */}
     </div>
   )
 }
