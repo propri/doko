@@ -25,8 +25,10 @@ export interface Card {
   trumpf?: boolean
 }
 
-const back1 = 'cards/card_back_blue.png'
-const back2 = 'cards/card_back_orange.png'
+const filetype = 'webp'
+
+const back1 = `cards/card_back1.${filetype}`
+const back2 = `cards/card_back2.${filetype}`
 
 const Cards: Card[] = []
 
@@ -38,7 +40,7 @@ kartenFarben.forEach((suit) => {
         farbe: suit,
         wert: value,
         back,
-        face: `cards/${value}_${suit}.png`,
+        face: `cards/${value}_${suit}.${filetype}`,
       })
     })
   })
@@ -73,7 +75,10 @@ export function isCard(card: Card, cardNameOrInstance: string | Card): boolean {
   if (typeof cardNameOrInstance === 'string') {
     return serializeCard(card) === cardNameOrInstance
   }
-  return card.farbe === cardNameOrInstance.farbe && card.wert === cardNameOrInstance.wert
+  return (
+    card.farbe === cardNameOrInstance.farbe &&
+    card.wert === cardNameOrInstance.wert
+  )
 }
 
 export default Cards
